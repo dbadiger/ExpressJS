@@ -187,3 +187,24 @@ Express supports various HTTP methods to handle different types of client reques
 - POST
 - PUT
 - DELETE
+
+  ### Handling a *GET* Request
+
+- Used to fetch data from the server.
+- Parameters can be passed using route paramenters or query strings.
+
+### Handling a *POST* Request
+
+- Used to send data to the server and create a new resource.
+- Requires middleware `(express.json())` to handle JSON input.
+
+        app.post("/users", express.json(), (req, res)=>{
+            const {name, email} = req.body;
+            res.json({
+                message:`User ${name} with email ${email} created successfully`
+            })
+        })
+
+### Handling a *PUT* Request
+
+- 
