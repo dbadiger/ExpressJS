@@ -223,7 +223,7 @@ Express supports various HTTP methods to handle different types of client reques
 - Used to remove a resource from the resource.
 
         app.delete('/users/:id',(req, res)=>{
-            const userId = req.params,id;
+            const userId = req.params.id;
             res.json({
              message:`User with id ${userId} deleted.`
             })
@@ -266,21 +266,69 @@ Simple Middleware Setup:
         console.log("New request received at "+ Date.now());
         next();
     })
-In Postman, using get method, http://localhost:3000 , when we click on send button, we will receive message "New request received at 185697456 time.
+In Postman, using get method, http://localhost:3000, when we click on send button, we will receive message "New request received at 185697456 time.
 
 ### Types of Middleware
 
-> **Application level Middleware:**  Applies to all routes in an app. 
-eg: app.use(loggerMiddleware)
+> **Application level Middleware:**  Applies to all routes in an app.
+> eg: app.use(loggerMiddleware)
+
+    app.use((req, res, next)=>{
+        console.log("New request has received at "+ Date.now())
+        next();
+    })
 
 > **Route-Level Middleware:** Applies to specific route groups.
-eg: router.use(authMiddleware)
+> eg: router.use(authMiddleware)
+
+    app.use('/welcome',(req, res, next)=>{
+        console.log("New request has received at "+ Date.now())
+        next();
+    })
+    
+    app.get('/welcome', (req, res)=>{
+        res.send("Welcome to Middleware")
+    })
+    
+Execution of middleware
+
+    app.use((req, res, next)=>{
+    console.log("Start")
+
+    res.on('finish',()=>{
+        console.log('End');
+        
+    })
+    next()
+    })
+    app.get("/", (req, res)=>{
+        console.log('Middle');
+        res.send("Welcome express")
+        
+    })
+Output: Start ->Middle-> Error
 
 > **Built-in Middleware:** comes with express (eg: express.json())
-eg: app.use(express.json())
+> eg: app.use(express.json())
 
 > **Third-Party Middleware:** External libraries for additional functionality
-eg: app.use(cors())
+> eg: app.use(cors()) , body-parser, cookie-parser, etc
 
 > **Error-Handling Middleware:** Handles errors in the request lifecycle.
-eg: app.use(errorHandler) 
+> eg: app.use(errorHandler)
+
+    app.get('/error', ()=>{
+        throw new Error('This is test error')
+    })
+    app.use((err, req, res, next)=>{
+        console.error(err.message);
+        res.send('Internal Server Error')
+    })
+    
+## Templating Engine in ExpressJS
+A templating engine generates dynamic HTML by embedding JavaScript-like logic within an HTML file.
+#### Key Benefits:
+- Keeps logic separate from presentation (HTML)
+- Uses variables, loops, conditions, and functions to generate content.
+
+In ExpressJS, templating engines are used to render views dynamically by integrating them into the application.
