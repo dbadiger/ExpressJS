@@ -207,4 +207,31 @@ Express supports various HTTP methods to handle different types of client reques
 
 ### Handling a *PUT* Request
 
-- 
+- Used to update an existing resource.
+- Uses route parameters (req.params) to identify the resource.
+
+        app.put('/users/:id', express.json(), (req, res)=>{
+            const userId = req.params.id;
+            const {name, email} = req.body;
+            res.json({
+                message:`User ${name} with email ${email} created successfully`
+            })
+        })
+
+### Handling a *DELETE* Request
+
+- Used to remove a resource from the resource.
+
+        app.delete('/users/:id',(req, res)=>{
+            const userId = req.params,id;
+            res.json({
+             message:`User with id ${userId} deleted.`
+            })
+        })
+
+### Handling with Multiple parameters
+
+app.get('/things/:name/:id', (req, res)=>{
+    const {name, id} = req.params;
+    res.json({id, name})
+})
