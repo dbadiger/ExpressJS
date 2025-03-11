@@ -191,7 +191,7 @@ Express supports various HTTP methods to handle different types of client reques
   ### Handling a *GET* Request
 
 - Used to fetch data from the server.
-- Parameters can be passed using route paramenters or query strings.
+- Parameters can be passed using route parameters or query strings.
 
 ### Handling a *POST* Request
 
@@ -231,7 +231,31 @@ Express supports various HTTP methods to handle different types of client reques
 
 ### Handling with Multiple parameters
 
-app.get('/things/:name/:id', (req, res)=>{
-    const {name, id} = req.params;
-    res.json({id, name})
-})
+    app.get('/things/:name/:id', (req, res)=>{
+        const {name, id} = req.params;
+        res.json({id, name})
+    })
+
+##### Condition for ID
+
+     app.get('/things/:name/:id([0-9]{5})', (req, res)=>{
+            const {name, id} = req.params;
+            res.json({id, name})
+    })
+##### Catch all Invalid Routes
+
+    app.get('*', (req, res)=>{
+        res.send('Sorry, This is an invalid URL.')
+    })
+
+## Middlewares
+Middleware functions in ExpressJS are functions that execute before the final request handler. They can:
+- Modify the request (req) and response (res) objects.
+- End the request-response cycle.
+- Call the next middleware function in the stack.
+
+#### Middleware Workflow:
+
+### Client Request --> Middleware -->Route Handler --> Response to Client
+
+Middleware is essential for logging, authentication, request parsing, error handling, etc.
