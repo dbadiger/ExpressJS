@@ -259,3 +259,28 @@ Middleware functions in ExpressJS are functions that execute before the final re
 ### Client Request --> Middleware -->Route Handler --> Response to Client
 
 Middleware is essential for logging, authentication, request parsing, error handling, etc.
+
+Simple Middleware Setup:
+
+    app.use((req, res, next)=>{
+        console.log("New request received at "+ Date.now());
+        next();
+    })
+In Postman, using get method, http://localhost:3000 , when we click on send button, we will receive message "New request received at 185697456 time.
+
+### Types of Middleware
+
+> **Application level Middleware:**  Applies to all routes in an app. 
+eg: app.use(loggerMiddleware)
+
+> **Route-Level Middleware:** Applies to specific route groups.
+eg: router.use(authMiddleware)
+
+> **Built-in Middleware:** comes with express (eg: express.json())
+eg: app.use(express.json())
+
+> **Third-Party Middleware:** External libraries for additional functionality
+eg: app.use(cors())
+
+> **Error-Handling Middleware:** Handles errors in the request lifecycle.
+eg: app.use(errorHandler) 
