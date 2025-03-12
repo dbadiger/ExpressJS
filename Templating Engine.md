@@ -10,9 +10,10 @@ in ExpressJS, templating engines are used to render views dynamically by integra
 
 Create new Folder with name *views*  and add file _index.ejs_  (ejs - embedded javascript)
 
+install `npm i ejs` package.
     <html>
       <body>
-        <h1>Hello, <%= userName =%>
+        <h1>Hello, <%= userName %>
       </body>
     </html>
       
