@@ -1,110 +1,73 @@
 import express from 'express'
-import { searchController } from './controller.js'
-import router from './route.js'
+import mongoose from 'mongoose'
+import { connectDB } from './config/db.js'
+import { Person } from './models/Person.js'
 
 const app = express()
 const PORT = 3000
+app.use(express.json)
+await connectDB()
 
-//Designing simple route
-// app.get('/', (req, res)=>{
-//     res.send("Express Application")
-// })
-/*
-//About Route
-app.get("/about", (req, res)=>{
-    res.send("About Route")
+app.get('/', (req, res) => {
+    res.send("welcome to express class")
 })
 
-//Contact Route
-app.get("/contact", (req, res)=>{
-    res.send("Contact Route")
-})
-*/
-// app.get("/user/:username", userController)
+//Insert data into Database(save into Database)
+app.post('/person', express.json(), async (req, res) => {
+    try {
+        const { email, name, age } = req.body;
+        const newPerson = new Person({
+            name, age, email
+        })
+        await newPerson.save()
+        console.log(newPerson);
+        res.send("Person Added to DB")
+    } catch (error) {
+        console.log(error);
+        res.send(error.message)
 
-// `/search?keyword=express`
-app.get("/search", searchController)
-
-// app.get("/user/login", userLogin);
-// app.get("/user/signup", userSignup);
-
-app.use('/user', router)
-app.use(express.json())
-
-/* Route level Middleware
-app.use('/welcome',(req, res, next)=>{
-    console.log("New request has received at "+ Date.now())
-    next();
-})
-
-app.get('/welcome', (req, res)=>{
-    res.send("Welcome to Middleware")
-})*/
-
-/* //Middleware execution order
-app.use((req, res, next)=>{
-    console.log("Start")
-
-    res.on('finish',()=>{
-        console.log('End');
-        
-    })
-    next()
-})
-app.get("/", (req, res)=>{
-    console.log('Middle');
-    res.send("Welcome express")
-    
-})
-*/
-
-
-app.get('/error', ()=>{
-    throw new Error('This is test error')
-})
-app.use((err, req, res, next)=>{
-    console.error(err.message);
-    res.send('Internal Server Error')
-})
-
-
-app.post("/users",(req, res)=>{
-    const {name, email} = req.body;
-    res.json({
-        message:`User ${name} is registerd with ${email} successfully.`
-    })
-})
-
-app.put('/users/:id', (req, res)=>{
-    const userId = req.params.id
-    const {name,email} = req.body;
-    res.json({
-        message:`User ${userId} updated to ${name} , ${email}`
-    })
+    }
 
 })
 
-app.delete('/users/:id', (req, res)=>{
-    const userId = req.params.id
-    res.json({
-        message:`user with ID ${userId} deleted successfully.`
-    })
+//Find the value in database
+app.get('/person', async (req, res) => {
+    const { email } = req.body;
+    const { age } = req.body;
+    const { id } = req.body
+    //different ways
+    // const personData = await Person.findOne({email})
+    const personData = await Person.find({ email, age })
+    // const personData1 = await Person.findById({id})
+    console.log(personData);
+    res.send("Person found")
 })
 
-// handling with multiple parameters
-app.get('/things/:name/:id([0-9]{5})', (req, res)=>{
-    const {name, id} = req.params;
-    res.json({
-        id, name
-    })
-    
+//Update value in the database
+app.put("/person", async () => {
+    const { id } = req.body
+    const personData = await Person.findById(id)
+    personData.age = 45 //updating age to 45 years
+    await personData.save()
+    console.log(personData);
+    res.send("Person Updated")
+})
+//Method 2
+app.put("/person", async () => {
+    const { id } = req.body
+    const personData = await Person.findByIdAndUpdate(id, { age: 45 })
+    await personData.save()
+    console.log(personData);
+    res.send("Person Updated")
 })
 
-//Catch all invalid routes
-app.get('*', (req, res)=>{
-    res.send('Sorry, this is an invalid URL')
+//Deleting Data
+app.delete('/person/:id', async (req, res) => {
+    const { id } = req.params
+    await Person.findByIdAndDelete(id)
+    res.send("Person Deleted")
 })
 
-app.listen(PORT, ()=>{
+app.listen(PORT, () => {
     console.log(`Server is Started at http://localhost:${PORT}`)
 })
